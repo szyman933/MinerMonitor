@@ -2,11 +2,7 @@ package com.ethpool.monitor.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PoolStatsDTO {
 
@@ -18,6 +14,16 @@ public class PoolStatsDTO {
     private Long workers;
     @JsonProperty("blocksPerHour")
     private Double blocksPerHour;
+
+    public PoolStatsDTO() {
+    }
+
+    public PoolStatsDTO(Long hashRate, Long miners, Long workers, Double blocksPerHour) {
+        this.hashRate = hashRate;
+        this.miners = miners;
+        this.workers = workers;
+        this.blocksPerHour = blocksPerHour;
+    }
 
     public Long getHashRate() {
         return hashRate;

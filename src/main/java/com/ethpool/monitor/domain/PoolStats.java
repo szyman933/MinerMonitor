@@ -48,4 +48,24 @@ public class PoolStats {
     public int getId() {
         return id;
     }
+
+    public Long getHashRate() {
+        return hashRate;
+    }
+
+    public Long getMiners() {
+        return miners;
+    }
+
+    public Long getWorkers() {
+        return workers;
+    }
+
+    public Double getBlocksPerHour() {
+        return blocksPerHour;
+    }
+
+    public Date getData() {
+        return data;
+    }
 }

@@ -23,7 +23,7 @@ public class PoolStatsController {
     @GetMapping(value = "getPoolStats")
     void getPoolStats() {
 
-        StatsResponseDTO poolStats = ethPoolClient.getPoolStats();
+        StatsResponseDTO poolStats = ethPoolClient.getStatsResponse();
 
         DataDTO dataDTO = poolStats.getDataDTO();
 

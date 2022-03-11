@@ -1,4 +1,4 @@
-package com.ethpool.monitor.dao;
+package com.ethpool.monitor.repository;
 
 import com.ethpool.monitor.domain.Price;
 import org.junit.jupiter.api.Test;

@@ -2,19 +2,12 @@ package com.ethpool.monitor.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
-
-@AllArgsConstructor
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PriceDTO {
 
     @JsonProperty("time")
-    private Date serverTime;
+    private String serverTime;
     @JsonProperty("usd")
     private Double usdPrice;
     @JsonProperty("btc")
@@ -22,7 +15,17 @@ public class PriceDTO {
     @JsonProperty("eur")
     private Double euroPrice;
 
-    public Date getServerTime() {
+    public PriceDTO(String serverTime, Double usdPrice, Double btcPrice, Double euroPrice) {
+        this.serverTime = serverTime;
+        this.usdPrice = usdPrice;
+        this.btcPrice = btcPrice;
+        this.euroPrice = euroPrice;
+    }
+
+    public PriceDTO() {
+    }
+
+    public String getServerTime() {
         return serverTime;
     }
 

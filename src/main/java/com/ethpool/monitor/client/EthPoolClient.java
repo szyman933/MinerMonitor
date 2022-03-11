@@ -17,16 +17,14 @@ public class EthPoolClient {
     private RestTemplate restTemplate;
 
 
-    public StatsResponseDTO getPoolStats() {
+    public StatsResponseDTO getStatsResponse() {
 
         StatsResponseDTO receivedPoolStats = restTemplate.getForObject(coreConfig.getEthPoolEndpoint() + "/poolStats", StatsResponseDTO.class);
-
 
         if (receivedPoolStats != null) {
             return receivedPoolStats;
         }
         return new StatsResponseDTO();
     }
-
 
 }

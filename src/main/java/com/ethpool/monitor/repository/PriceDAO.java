@@ -1,4 +1,4 @@
-package com.ethpool.monitor.dao;
+package com.ethpool.monitor.repository;
 
 import com.ethpool.monitor.domain.Price;
 import org.springframework.data.repository.CrudRepository;
@@ -11,6 +11,9 @@ import java.util.List;
 @Repository
 public interface PriceDAO extends CrudRepository<Price, Integer> {
 
+
     List<Price> findById(int id);
+
+    Price save(Price price);
 
 }

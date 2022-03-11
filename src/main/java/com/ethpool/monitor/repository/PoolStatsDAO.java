@@ -1,4 +1,4 @@
-package com.ethpool.monitor.dao;
+package com.ethpool.monitor.repository;
 
 import com.ethpool.monitor.domain.PoolStats;
 import org.springframework.data.repository.CrudRepository;
@@ -13,6 +13,7 @@ public interface PoolStatsDAO extends CrudRepository<PoolStats,Integer> {
 
     List<PoolStats> findById(int id);
 
+    PoolStats save(PoolStats poolStats);
 
 
 }
