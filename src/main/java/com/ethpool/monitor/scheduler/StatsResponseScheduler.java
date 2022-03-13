@@ -2,6 +2,7 @@ package com.ethpool.monitor.scheduler;
 
 
 import com.ethpool.monitor.client.EthPoolClient;
+import com.ethpool.monitor.configuration.CoreConfig;
 import com.ethpool.monitor.domain.StatsResponseDTO;
 import com.ethpool.monitor.service.DBService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,17 @@ import java.util.Date;
 @Component
 public class StatsResponseScheduler {
 
+    @Autowired
+     CoreConfig coreConfig;
 
     @Autowired
-    EthPoolClient ethPoolClient;
+     EthPoolClient ethPoolClient;
 
     @Autowired
-    DBService dbService;
+     DBService dbService;
 
-    @Scheduled(fixedDelay = 60000)
+
+    @Scheduled(fixedDelayString = "${minermonitor.accdata.interval}")
     void getStatsResponseAndSave(){
 
         StatsResponseDTO poolStats = ethPoolClient.getStatsResponse();
@@ -31,6 +35,7 @@ public class StatsResponseScheduler {
 
 
         System.out.println(new Date());
+
         System.out.println(poolStats.getStatus());
 
     }

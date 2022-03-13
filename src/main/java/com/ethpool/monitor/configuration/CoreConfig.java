@@ -20,7 +20,15 @@ public class CoreConfig {
     private String ethPoolEndpoint;
 
 
+    @Value("${minermonitor.accdata.interval}")
+    private Long interval;
+
+
     public String getEthPoolEndpoint() {
         return ethPoolEndpoint;
+    }
+
+    public Long getInterval() {
+        return interval;
     }
 }
