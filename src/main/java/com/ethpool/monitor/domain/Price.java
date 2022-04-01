@@ -5,7 +5,6 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity(name = "PRICE")
@@ -41,14 +40,6 @@ public class Price {
     @Column(name = "SAVED_AT")
     private Date data;
 
-
-    Date parseServerTimeToDate(String time){
-
-        LocalDateTime dateTime = LocalDateTime.parse(time);
-
-        return java.sql.Date.valueOf(dateTime.toLocalDate());
-
-    }
 
     public int getId() {
         return id;

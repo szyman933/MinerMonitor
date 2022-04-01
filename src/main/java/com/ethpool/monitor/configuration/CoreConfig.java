@@ -19,9 +19,13 @@ public class CoreConfig {
     @Value("${ethpool.api.endpoint}")
     private String ethPoolEndpoint;
 
+    @Value("${ethpool.api.miner}")
+    private String ethAdress;
 
     @Value("${minermonitor.accdata.interval}")
     private Long interval;
+
+
 
 
     public String getEthPoolEndpoint() {
@@ -30,5 +34,9 @@ public class CoreConfig {
 
     public Long getInterval() {
         return interval;
+    }
+
+    public String getEthAdress() {
+        return ethAdress;
     }
 }

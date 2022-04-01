@@ -1,6 +1,7 @@
 package com.ethpool.monitor.client;
 
 import com.ethpool.monitor.configuration.CoreConfig;
+import com.ethpool.monitor.domain.MinerStatsDTO;
 import com.ethpool.monitor.domain.StatsResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,17 @@ public class EthPoolClient {
             return receivedPoolStats;
         }
         return new StatsResponseDTO();
+    }
+
+
+    public MinerStatsDTO getMinerStats() {
+
+        MinerStatsDTO receivedMinerStats = restTemplate.getForObject(coreConfig.getEthPoolEndpoint() + "/miner/" + coreConfig.getEthAdress() + "/currentStats", MinerStatsDTO.class);
+
+        if (receivedMinerStats != null) {
+            return receivedMinerStats;
+        }
+        return new MinerStatsDTO();
     }
 
 }
