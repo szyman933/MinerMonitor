@@ -6,6 +6,9 @@ import com.ethpool.monitor.domain.StatsResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 
 @Component
@@ -20,7 +23,10 @@ public class EthPoolClient {
 
     public StatsResponseDTO getStatsResponse() {
 
-        StatsResponseDTO receivedPoolStats = restTemplate.getForObject(coreConfig.getEthPoolEndpoint() + "/poolStats", StatsResponseDTO.class);
+        URI url = UriComponentsBuilder.fromHttpUrl(coreConfig.getEthPoolEndpoint() + "/poolStats")
+                .build().encode().toUri();
+
+        StatsResponseDTO receivedPoolStats = restTemplate.getForObject(url, StatsResponseDTO.class);
 
         if (receivedPoolStats != null) {
             return receivedPoolStats;
@@ -31,7 +37,10 @@ public class EthPoolClient {
 
     public MinerStatsDTO getMinerStats() {
 
-        MinerStatsDTO receivedMinerStats = restTemplate.getForObject(coreConfig.getEthPoolEndpoint() + "/miner/" + coreConfig.getEthAdress() + "/currentStats", MinerStatsDTO.class);
+        URI url = UriComponentsBuilder.fromHttpUrl(coreConfig.getEthPoolEndpoint() + "/miner/" + coreConfig.getEthAdress() + "/currentStats")
+                .build().encode().toUri();
+
+        MinerStatsDTO receivedMinerStats = restTemplate.getForObject(url, MinerStatsDTO.class);
 
         if (receivedMinerStats != null) {
             return receivedMinerStats;

@@ -2,11 +2,8 @@ package com.ethpool.monitor.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MinerStatsDTO {
 
@@ -22,5 +19,14 @@ public class MinerStatsDTO {
 
     public MinerStatsDataDTO getMinerStatsDataDTO() {
         return minerStatsDataDTO;
+    }
+
+
+    public MinerStatsDTO(String status, MinerStatsDataDTO minerStatsDataDTO) {
+        this.status = status;
+        this.minerStatsDataDTO = minerStatsDataDTO;
+    }
+
+    public MinerStatsDTO() {
     }
 }
