@@ -3,6 +3,8 @@ package com.ethpool.monitor.client;
 import com.ethpool.monitor.configuration.CoreConfig;
 import com.ethpool.monitor.domain.MinerStatsDTO;
 import com.ethpool.monitor.domain.StatsResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -13,6 +15,8 @@ import java.net.URI;
 
 @Component
 public class EthPoolClient {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthPoolClient.class);
 
     @Autowired
     CoreConfig coreConfig;
@@ -31,6 +35,7 @@ public class EthPoolClient {
         if (receivedPoolStats != null) {
             return receivedPoolStats;
         }
+        LOGGER.warn("StatsResponse is null, creating empty statsResponse");
         return new StatsResponseDTO();
     }
 
@@ -45,6 +50,7 @@ public class EthPoolClient {
         if (receivedMinerStats != null) {
             return receivedMinerStats;
         }
+        LOGGER.warn("MinerStatsDTO is null, creating empty minerStats");
         return new MinerStatsDTO();
     }
 

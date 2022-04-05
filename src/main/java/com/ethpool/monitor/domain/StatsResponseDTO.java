@@ -2,11 +2,9 @@ package com.ethpool.monitor.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StatsResponseDTO {
 
@@ -23,5 +21,15 @@ public class StatsResponseDTO {
 
     public DataDTO getDataDTO() {
         return dataDTO;
+    }
+
+
+    public StatsResponseDTO() {
+    }
+
+    public StatsResponseDTO(String status, DataDTO dataDTO) {
+
+        this.status = status;
+        this.dataDTO = dataDTO;
     }
 }

@@ -1,8 +1,7 @@
 package com.ethpool.monitor.client;
 
 import com.ethpool.monitor.configuration.CoreConfig;
-import com.ethpool.monitor.domain.MinerStatsDTO;
-import com.ethpool.monitor.domain.MinerStatsDataDTO;
+import com.ethpool.monitor.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,7 @@ class EthPoolClientTest {
 
 
     @InjectMocks
-    private EthPoolClient ethPoolClient ;
+    private EthPoolClient ethPoolClient;
 
     @Mock
     private RestTemplate restTemplate;
@@ -31,17 +30,15 @@ class EthPoolClientTest {
     private CoreConfig coreConfig;
 
 
-
     @BeforeEach
-    void init(){
+    void init() {
         Mockito.when(coreConfig.getEthPoolEndpoint()).thenReturn("http://test.com");
-        Mockito.when(coreConfig.getEthAdress()).thenReturn("0x0000000000000");
     }
 
 
     @Test
     void shouldFetchMinerStatsData() throws URISyntaxException {
-
+        //given
         MinerStatsDataDTO minerStatsDataDTO = new MinerStatsDataDTO(
                 1648830600L,
                 1648830541L,
@@ -59,20 +56,64 @@ class EthPoolClientTest {
 
         URI url = new URI("http://test.com/miner/0x0000000000000/currentStats");
 
-        MinerStatsDTO minerStatsDTO = new MinerStatsDTO("OK",minerStatsDataDTO);
+        MinerStatsDTO minerStatsDTO = new MinerStatsDTO("OK", minerStatsDataDTO);
 
+        Mockito.when(coreConfig.getEthAdress()).thenReturn("0x0000000000000");
         Mockito.when(restTemplate.getForObject(url, MinerStatsDTO.class)).thenReturn(minerStatsDTO);
-
+        //when
         MinerStatsDTO fetchedMinerStats = ethPoolClient.getMinerStats();
-
-        assertEquals(20,fetchedMinerStats.getMinerStatsDataDTO().getValidShares());
-        assertEquals(1,fetchedMinerStats.getMinerStatsDataDTO().getActiveWorkers());
-
+        //then
+        assertEquals(20, fetchedMinerStats.getMinerStatsDataDTO().getValidShares());
+        assertEquals(1, fetchedMinerStats.getMinerStatsDataDTO().getActiveWorkers());
 
     }
 
-//TODO
-    //test EthPoolClient getStatsResponse method
+    @Test
+    void shouldFetchEmptyMinerStatsData() throws URISyntaxException {
+
+        URI url = new URI("http://test.com/miner/0x0000000000000/currentStats");
+
+        Mockito.when(coreConfig.getEthAdress()).thenReturn("0x0000000000000");
+        Mockito.when(restTemplate.getForObject(url, MinerStatsDTO.class)).thenReturn(null);
+
+        MinerStatsDTO fetchedMinerStats = ethPoolClient.getMinerStats();
+
+        assertNotNull(fetchedMinerStats);
+    }
+
+    @Test
+    void shouldFetchStatusResponse() throws URISyntaxException {
+        //given
+        PoolStatsDTO poolStatsDTO = new PoolStatsDTO(282981168054272L, 320762L, 1389641L, 76.25);
+
+        PriceDTO priceDTO = new PriceDTO("2022-04-05T15:57:49.000Z", 3461.6101074219, 0.0756006092, 3169.4799804688);
+
+        DataDTO dataDTO = new DataDTO(poolStatsDTO, priceDTO);
+
+        StatsResponseDTO statsResponseDTO = new StatsResponseDTO("OK", dataDTO);
+
+        URI url = new URI("http://test.com/poolStats");
 
 
+        Mockito.when(restTemplate.getForObject(url, StatsResponseDTO.class)).thenReturn(statsResponseDTO);
+        //when
+        StatsResponseDTO fetchedStatsResponseDTO = ethPoolClient.getStatsResponse();
+        //then
+        assertEquals(fetchedStatsResponseDTO.getStatus(), "OK");
+        assertEquals(fetchedStatsResponseDTO.getDataDTO().getPoolStatsDTO().getMiners(), 320762L);
+        assertEquals(fetchedStatsResponseDTO.getDataDTO().getPriceDTO().getEuroPrice(), 3169.4799804688);
+
+    }
+
+    @Test
+    void shouldFetchEmptyStatusResponse() throws URISyntaxException {
+        //given
+        URI url = new URI("http://test.com/poolStats");
+
+        Mockito.when(restTemplate.getForObject(url, StatsResponseDTO.class)).thenReturn(null);
+        //when
+        StatsResponseDTO fetchedStatsResponseDTO = ethPoolClient.getStatsResponse();
+        //then
+        assertNotNull(fetchedStatsResponseDTO);
+    }
 }

@@ -3,12 +3,8 @@ package com.ethpool.monitor.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DataDTO {
 
@@ -25,5 +21,14 @@ public class DataDTO {
 
     public PriceDTO getPriceDTO() {
         return priceDTO;
+    }
+
+
+    public DataDTO() {
+    }
+
+    public DataDTO(PoolStatsDTO poolStatsDTO, PriceDTO priceDTO) {
+        this.poolStatsDTO = poolStatsDTO;
+        this.priceDTO = priceDTO;
     }
 }
