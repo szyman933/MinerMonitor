@@ -33,18 +33,26 @@ public class StatsResponseScheduler {
 
         StatsResponseDTO poolStats = ethPoolClient.getStatsResponse();
 
+        log.info("Status pobierania statystyk EthPool : {}", poolStats.getStatus());
+
         dbService.savePoolStats(poolStats.getDataDTO().getPoolStatsDTO());
 
         dbService.savePrice(poolStats.getDataDTO().getPriceDTO());
 
+
+
+
         MinerStatsDTO minerStatsDTO = ethPoolClient.getMinerStats();
 
-        dbService.saveMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
-
-
-        log.info("Status pobierania statystyk EthPool : {}", poolStats.getStatus());
-
         log.info("Status pobierania statystyk Minera : {} , aktywne koparki : {} , sredni hashrate : {}", minerStatsDTO.getStatus(), minerStatsDTO.getMinerStatsDataDTO().getActiveWorkers(), minerStatsDTO.getMinerStatsDataDTO().getAverageHashrate());
+
+        if (dbService.existsMinerStatsDataByServerTime(minerStatsDTO.getMinerStatsDataDTO())) {
+            log.warn("Duplicate MinerStatsData, skipping !");
+        } else {
+            log.info("Fresh MinerStatsData, saving data");
+            dbService.saveMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
+        }
+
 
     }
 

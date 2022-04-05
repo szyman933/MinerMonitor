@@ -7,6 +7,7 @@ import com.ethpool.monitor.mappers.PriceMapper;
 import com.ethpool.monitor.repository.MinerStatsDataDAO;
 import com.ethpool.monitor.repository.PoolStatsDAO;
 import com.ethpool.monitor.repository.PriceDAO;
+import com.ethpool.monitor.utilities.Converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,11 @@ public class DBService {
     public MinerStatsData saveMinerStatsData(final MinerStatsDataDTO minerStatsDataDTO){
 
         return minerStatsDataDAO.save(minerStatsDataMapper.mapToMinerStatsData(minerStatsDataDTO));
+    }
+
+    public boolean existsMinerStatsDataByServerTime(final MinerStatsDataDTO minerStatsDataDTO){
+
+        return minerStatsDataDAO.existsByServerTime(Converters.convertsUnixTimestampToLocalDateTime(minerStatsDataDTO.getServerTime()));
     }
 
 }
