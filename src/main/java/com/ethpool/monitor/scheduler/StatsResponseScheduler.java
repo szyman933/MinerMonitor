@@ -2,7 +2,6 @@ package com.ethpool.monitor.scheduler;
 
 
 import com.ethpool.monitor.client.EthPoolClient;
-import com.ethpool.monitor.configuration.CoreConfig;
 import com.ethpool.monitor.domain.MinerStatsDTO;
 import com.ethpool.monitor.domain.StatsResponseDTO;
 import com.ethpool.monitor.service.DBService;
@@ -18,8 +17,6 @@ public class StatsResponseScheduler {
 
     public static Logger log = LoggerFactory.getLogger(StatsResponseScheduler.class);
 
-    @Autowired
-    CoreConfig coreConfig;
 
     @Autowired
     EthPoolClient ethPoolClient;
@@ -28,7 +25,7 @@ public class StatsResponseScheduler {
     DBService dbService;
 
 
-    @Scheduled(fixedDelayString = "${minermonitor.accdata.interval}")
+    @Scheduled(fixedDelayString = "${minermonitor.getpoolstats.interval}")
     void getStatsResponseAndSave() {
 
         StatsResponseDTO poolStats = ethPoolClient.getStatsResponse();
@@ -39,8 +36,11 @@ public class StatsResponseScheduler {
 
         dbService.savePrice(poolStats.getDataDTO().getPriceDTO());
 
+    }
 
 
+    @Scheduled(fixedDelayString = "${minermonitor.getminerstats.interval}")
+    void getMinerStatsAndSave() {
 
         MinerStatsDTO minerStatsDTO = ethPoolClient.getMinerStats();
 
@@ -52,7 +52,6 @@ public class StatsResponseScheduler {
             log.info("Fresh MinerStatsData, saving data");
             dbService.saveMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
         }
-
 
     }
 
