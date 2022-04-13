@@ -8,7 +8,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
-@Entity(name = "MINER_STATS_DATA")
+@Entity
+@Table(name = "MINER_STATS_DATA")
 @Setter
 @Getter
 public class MinerStatsData {

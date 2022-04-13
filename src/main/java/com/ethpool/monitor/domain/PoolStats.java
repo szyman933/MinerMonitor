@@ -7,7 +7,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "POOL_STATS")
+@Entity
+@Table(name = "POOL_STATS")
 @Getter
 @Setter
 public class PoolStats {
