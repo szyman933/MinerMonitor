@@ -1,22 +1,30 @@
 package com.ethpool.monitor.domain;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@org.hibernate.annotations.NamedQuery(name = "Alarm.pendingAlarms", query = "FROM Alarm WHERE alarmStop is null")
+import org.hibernate.annotations.NamedQuery;
+
+@NamedQuery(name = "Alarm.pendingAlarms", query = "FROM Alarm WHERE alarmStop is null")
+
+@NamedQuery(name = "Alarm.alarmExist", query = "FROM Alarm WHERE serverTime = :SERVERTIME and alarmName = :ALARMNAME and alarmStop is null")
 
 @Entity
+@Setter
+@Getter
 @Table(name = "ALARM")
 public class Alarm {
 
     public Alarm() {
     }
 
-    public Alarm(LocalDateTime alarmRegistration, LocalDateTime alarmDuration, LocalDateTime alarmStop, LocalDateTime serverTime, String alarmName, int alarmLevel) {
+    public Alarm(LocalDateTime alarmRegistration, Long alarmDuration, LocalDateTime alarmStop, LocalDateTime serverTime, String alarmName, int alarmLevel) {
         this.alarmRegistration = alarmRegistration;
-        this.alarmDuration = alarmDuration;
+        this.alarmDurationSeconds = alarmDuration;
         this.alarmStop = alarmStop;
         this.serverTime = serverTime;
         this.alarmName = alarmName;
@@ -26,14 +34,14 @@ public class Alarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NonNull
-    @Column(name = "ID",unique = true)
+    @Column(name = "ID", unique = true)
     private int id;
 
     @Column(name = "ALARM_REG_TIME")
     private LocalDateTime alarmRegistration;
 
-    @Column(name = "ALARM_DURATION")
-    private LocalDateTime alarmDuration;
+    @Column(name = "ALARM_DURATION_SECONDS")
+    private Long alarmDurationSeconds;
 
     @Column(name = "ALARM_END_TIME")
     private LocalDateTime alarmStop;
@@ -56,8 +64,8 @@ public class Alarm {
         return alarmRegistration;
     }
 
-    public LocalDateTime getAlarmDuration() {
-        return alarmDuration;
+    public Long getAlarmDuration() {
+        return alarmDurationSeconds;
     }
 
     public LocalDateTime getAlarmStop() {
@@ -74,5 +82,17 @@ public class Alarm {
 
     public int getAlarmLevel() {
         return alarmLevel;
+    }
+
+    @Override
+    public String toString() {
+        return "Alarm{" +
+                "alarmRegistration=" + alarmRegistration +
+                ", alarmDurationSeconds=" + alarmDurationSeconds +
+                ", alarmStop=" + alarmStop +
+                ", serverTime=" + serverTime +
+                ", alarmName='" + alarmName + '\'' +
+                ", alarmLevel=" + alarmLevel +
+                '}';
     }
 }

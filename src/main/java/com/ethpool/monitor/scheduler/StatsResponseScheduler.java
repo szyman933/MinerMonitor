@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StatsResponseScheduler {
 
-    public static Logger log = LoggerFactory.getLogger(StatsResponseScheduler.class);
+    public static final Logger log = LoggerFactory.getLogger(StatsResponseScheduler.class);
 
 
     @Autowired

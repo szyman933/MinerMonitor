@@ -4,12 +4,16 @@ import com.ethpool.monitor.domain.*;
 import com.ethpool.monitor.mappers.MinerStatsDataMapper;
 import com.ethpool.monitor.mappers.PoolStatsMapper;
 import com.ethpool.monitor.mappers.PriceMapper;
+import com.ethpool.monitor.repository.AlarmDAO;
 import com.ethpool.monitor.repository.MinerStatsDataDAO;
 import com.ethpool.monitor.repository.PoolStatsDAO;
 import com.ethpool.monitor.repository.PriceDAO;
 import com.ethpool.monitor.utilities.Converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class DBService {
@@ -32,6 +36,9 @@ public class DBService {
 
     @Autowired
     private MinerStatsDataMapper minerStatsDataMapper;
+
+    @Autowired
+    private AlarmDAO alarmDAO;
 
 
     public PoolStats savePoolStats(final PoolStatsDTO poolStatsDto) {
@@ -56,4 +63,16 @@ public class DBService {
         return minerStatsDataDAO.existsByServerTime(Converters.convertsUnixTimestampToLocalDateTime(minerStatsDataDTO.getServerTime()));
     }
 
+    public Alarm saveAlarm(Alarm alarm){
+
+        return alarmDAO.save(alarm);
+    }
+
+    public List<Alarm> getPendingAlarms(){
+        return alarmDAO.pendingAlarms();
+    }
+
+    public List<Alarm> alarmExist(LocalDateTime time,String name){
+        return alarmDAO.alarmExist(time,name);
+    }
 }
