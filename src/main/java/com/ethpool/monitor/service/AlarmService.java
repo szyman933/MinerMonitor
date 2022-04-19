@@ -5,10 +5,11 @@ import com.ethpool.monitor.domain.Alarm;
 import com.ethpool.monitor.domain.MinerStatsDTO;
 import com.ethpool.monitor.domain.MinerStatsData;
 import com.ethpool.monitor.mappers.MinerStatsDataMapper;
-import javafx.util.Pair;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -55,7 +56,7 @@ public class AlarmService {
 
     }
 
-    Pair<Integer, String> getAlarmNameAndLevel(int reason) {
+    public Pair<Integer, String> getAlarmNameAndLevel(int reason) {
         String alarmName;
         int level;
         switch (reason) {
@@ -83,9 +84,7 @@ public class AlarmService {
             default -> throw new IllegalArgumentException("Unrecognized alarm reason !");
 
         }
-
-
-        return new Pair<>(level, alarmName);
+        return Pair.of(level,alarmName);
     }
 
 
@@ -119,15 +118,15 @@ public class AlarmService {
 
             Pair<Integer, String> alarmDetails = getAlarmNameAndLevel(reason);
 
-            log.info("Alarm details : name {} , level {}", alarmDetails.getValue(), alarmDetails.getKey());
+            log.info("Alarm details : level {} , name {}  ",  alarmDetails.getFirst(), alarmDetails.getSecond());
 
-            boolean existingAlarm = alarmExist(minerStatsData, alarmDetails.getValue());
+            boolean existingAlarm = alarmExist(minerStatsData, alarmDetails.getSecond());
 
             if (!existingAlarm) {
 
                 log.info("Alarm doesn't exist in database, saving alarm !");
 
-                Alarm newAlarm = new Alarm(LocalDateTime.now(), 0L, null, minerStatsData.getServerTime(), alarmDetails.getValue(), alarmDetails.getKey());
+                Alarm newAlarm = new Alarm(LocalDateTime.now(), 0L, null, minerStatsData.getServerTime(), alarmDetails.getSecond(), alarmDetails.getFirst());
 
                 log.info("Alarm entity : {}", newAlarm);
 
