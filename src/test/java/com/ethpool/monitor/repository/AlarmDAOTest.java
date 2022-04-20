@@ -36,6 +36,27 @@ class AlarmDAOTest {
 
         assertEquals(1, fetchedAlarm.size());
 
+        alarmDAO.deleteById(id);
+
+    }
+
+    @Test
+    void checkIfAlarmExistTest() {
+
+        LocalDateTime alarmStart = LocalDateTime.of(2022, 4, 12, 13, 10, 0);
+        LocalDateTime serverTime = LocalDateTime.of(2022, 4, 12, 13, 20, 0);
+
+        Alarm alarm = new Alarm(alarmStart, null, null, serverTime, "Testowy", 1);
+
+        alarmDAO.save(alarm);
+
+        int id = alarm.getId();
+
+        List<Alarm> fetchedAlarm = alarmDAO.alarmExist(serverTime, "Testowy");
+
+        assertEquals(1, fetchedAlarm.size());
+
+        alarmDAO.deleteById(id);
     }
 
 }

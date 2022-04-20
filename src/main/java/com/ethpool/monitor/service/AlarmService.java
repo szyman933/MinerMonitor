@@ -6,6 +6,7 @@ import com.ethpool.monitor.domain.MinerStatsDTO;
 import com.ethpool.monitor.domain.MinerStatsData;
 import com.ethpool.monitor.mappers.MinerStatsDataMapper;
 
+import com.ethpool.monitor.utilities.Converters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.ethpool.monitor.utilities.Converters.convertsLocalDateToLongMilis;
+import static com.ethpool.monitor.utilities.Converters.convertsUnixTimestampToLocalDateTime;
 
 
 @Service
@@ -26,6 +30,7 @@ public class AlarmService {
 
     @Autowired
     MinerStatsDataMapper minerStatsDataMapper;
+
 
     private static final int WORKER_OFFLINE = 1;
     private static final int LOW_PERFORMANCE = 2;
@@ -84,20 +89,17 @@ public class AlarmService {
             default -> throw new IllegalArgumentException("Unrecognized alarm reason !");
 
         }
-        return Pair.of(level,alarmName);
+        return Pair.of(level, alarmName);
     }
-
 
     void updateAlarm() {
         //TODO
     }
 
-    boolean alarmExist(MinerStatsData minerStatsData, String name) {
-        List<Alarm> theList = dbService.alarmExist(minerStatsData.getServerTime(), name);
+    List<Alarm> alarmExist(MinerStatsData minerStatsData, String name) {
 
-        return !theList.isEmpty();
+        return dbService.alarmExist(minerStatsData.getServerTime(), name);
     }
-
 
     List<Alarm> getPendingAlarms() {
 
@@ -118,11 +120,11 @@ public class AlarmService {
 
             Pair<Integer, String> alarmDetails = getAlarmNameAndLevel(reason);
 
-            log.info("Alarm details : level {} , name {}  ",  alarmDetails.getFirst(), alarmDetails.getSecond());
+            log.info("Alarm details : level {} , name {}  ", alarmDetails.getFirst(), alarmDetails.getSecond());
 
-            boolean existingAlarm = alarmExist(minerStatsData, alarmDetails.getSecond());
+            List<Alarm> existingAlarm = alarmExist(minerStatsData, alarmDetails.getSecond());
 
-            if (!existingAlarm) {
+            if (!existingAlarm.isEmpty()) {
 
                 log.info("Alarm doesn't exist in database, saving alarm !");
 
@@ -133,8 +135,34 @@ public class AlarmService {
                 dbService.saveAlarm(newAlarm);
 
             } else {
-                log.info("Alarm exist and is pending");
-                //TODO update alarm when exist
+                log.info("Alarm exist and is pending. Updating duration time ");
+
+
+                for (Alarm alarmToUpdate : existingAlarm
+                ) {
+                    log.debug("# Updating alarm : ID {}, NAME {}, REG_TIME{}", alarmToUpdate.getId(), alarmToUpdate.getAlarmName(), alarmToUpdate.getAlarmRegistration());
+
+                    Long alarmDuration;
+
+                    if (alarmToUpdate.getAlarmDurationSeconds() != null) {
+                        alarmDuration = alarmToUpdate.getAlarmDurationSeconds();
+                    } else {
+                        alarmDuration = 0L;
+                    }
+
+                    long difference = (convertsLocalDateToLongMilis(LocalDateTime.now()) - convertsLocalDateToLongMilis(alarmToUpdate.getAlarmRegistration())) * 1000;
+
+                    log.debug("# Calculated duration is : {} s", alarmDuration + difference);
+
+                    alarmToUpdate.setAlarmDurationSeconds(alarmDuration + difference);
+
+                    dbService.updateAlarm(alarmToUpdate);
+
+                    log.debug("# Updated Alarm  : {} s", alarmToUpdate);
+
+                }
+
+
             }
 
         }

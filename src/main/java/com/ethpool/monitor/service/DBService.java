@@ -75,4 +75,9 @@ public class DBService {
     public List<Alarm> alarmExist(LocalDateTime time,String name){
         return alarmDAO.alarmExist(time,name);
     }
+
+
+    public void updateAlarm(Alarm alarm){
+        alarmDAO.updateByAlarm(alarm);
+    }
 }

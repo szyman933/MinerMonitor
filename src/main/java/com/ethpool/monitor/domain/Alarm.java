@@ -64,7 +64,7 @@ public class Alarm {
         return alarmRegistration;
     }
 
-    public Long getAlarmDuration() {
+    public Long getAlarmDurationSeconds() {
         return alarmDurationSeconds;
     }
 
