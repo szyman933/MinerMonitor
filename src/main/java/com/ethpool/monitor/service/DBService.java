@@ -53,31 +53,30 @@ public class DBService {
 
     }
 
-    public MinerStatsData saveMinerStatsData(final MinerStatsDataDTO minerStatsDataDTO){
+    public MinerStatsData saveMinerStatsData(final MinerStatsDataDTO minerStatsDataDTO) {
 
         return minerStatsDataDAO.save(minerStatsDataMapper.mapToMinerStatsData(minerStatsDataDTO));
     }
 
-    public boolean existsMinerStatsDataByServerTime(final MinerStatsDataDTO minerStatsDataDTO){
+    public boolean existsMinerStatsDataByServerTime(final MinerStatsDataDTO minerStatsDataDTO) {
 
         return minerStatsDataDAO.existsByServerTime(Converters.convertsUnixTimestampToLocalDateTime(minerStatsDataDTO.getServerTime()));
     }
 
-    public Alarm saveAlarm(Alarm alarm){
+    public Alarm saveAlarm(Alarm alarm) {
 
         return alarmDAO.save(alarm);
     }
 
-    public List<Alarm> getPendingAlarms(){
+    public List<Alarm> getPendingAlarms() {
         return alarmDAO.pendingAlarms();
     }
 
-    public List<Alarm> alarmExist(LocalDateTime time,String name){
-        return alarmDAO.alarmExist(time,name);
+    public List<Alarm> alarmExist(LocalDateTime time, String name) {
+        return alarmDAO.alarmExist(time, name);
     }
 
-
-    public void updateAlarm(Alarm alarm){
-        alarmDAO.updateByAlarm(alarm);
+    public void updateAlarmDuration(Alarm alarm) {
+        alarmDAO.updateAlarmDuration(alarm.getId(), alarm.getAlarmDurationSeconds());
     }
 }

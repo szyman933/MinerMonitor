@@ -59,4 +59,36 @@ class AlarmDAOTest {
         alarmDAO.deleteById(id);
     }
 
+    @Test
+    void updateDurationInExistingAlarm() {
+
+        LocalDateTime alarmStart = LocalDateTime.of(2022, 4, 12, 13, 10, 0);
+        LocalDateTime serverTime = LocalDateTime.of(2022, 4, 12, 13, 20, 0);
+
+        Alarm alarm = new Alarm(alarmStart, 10L, null, serverTime, "Testowy", 1);
+
+        alarmDAO.save(alarm);
+
+        int id = alarm.getId();
+
+        List<Alarm> fetchedAlarm = alarmDAO.findById(id);
+
+        fetchedAlarm.stream().forEach(System.out::println);
+
+        alarmDAO.updateAlarmDuration(id, 15L);
+
+        List<Alarm> fetchedAlarmUpdated = alarmDAO.findById(id);
+
+        fetchedAlarmUpdated.stream().forEach(System.out::println);
+
+        if (fetchedAlarmUpdated.size() == 1) {
+            assertEquals(15L, fetchedAlarmUpdated.get(0).getAlarmDurationSeconds());
+            alarmDAO.deleteById(id);
+        } else {
+            alarmDAO.deleteById(id);
+            fail();
+        }
+
+    }
+
 }

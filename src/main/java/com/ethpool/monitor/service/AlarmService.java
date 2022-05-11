@@ -6,7 +6,7 @@ import com.ethpool.monitor.domain.MinerStatsDTO;
 import com.ethpool.monitor.domain.MinerStatsData;
 import com.ethpool.monitor.mappers.MinerStatsDataMapper;
 
-import com.ethpool.monitor.utilities.Converters;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.ethpool.monitor.utilities.Converters.convertsLocalDateToLongMilis;
-import static com.ethpool.monitor.utilities.Converters.convertsUnixTimestampToLocalDateTime;
+
 
 
 @Service
@@ -137,7 +137,6 @@ public class AlarmService {
             } else {
                 log.info("Alarm exist and is pending. Updating duration time ");
 
-
                 for (Alarm alarmToUpdate : existingAlarm
                 ) {
                     log.debug("# Updating alarm : ID {}, NAME {}, REG_TIME{}", alarmToUpdate.getId(), alarmToUpdate.getAlarmName(), alarmToUpdate.getAlarmRegistration());
@@ -156,7 +155,7 @@ public class AlarmService {
 
                     alarmToUpdate.setAlarmDurationSeconds(alarmDuration + difference);
 
-                    dbService.updateAlarm(alarmToUpdate);
+                    dbService.updateAlarmDuration(alarmToUpdate);
 
                     log.debug("# Updated Alarm  : {} s", alarmToUpdate);
 

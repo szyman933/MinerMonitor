@@ -84,6 +84,11 @@ public class Alarm {
         return alarmLevel;
     }
 
+
+    public void setAlarmDurationSeconds(Long alarmDurationSeconds) {
+        this.alarmDurationSeconds = alarmDurationSeconds;
+    }
+
     @Override
     public String toString() {
         return "Alarm{" +
@@ -93,6 +98,7 @@ public class Alarm {
                 ", serverTime=" + serverTime +
                 ", alarmName='" + alarmName + '\'' +
                 ", alarmLevel=" + alarmLevel +
+                ", ID=" + id +
                 '}';
     }
 }

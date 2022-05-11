@@ -23,8 +23,6 @@ public interface AlarmDAO extends CrudRepository<Alarm, Integer> {
 
     List<Alarm> findAll();
 
-    void  updateByAlarm(Alarm alarm);
-
     @Query
     List<Alarm> pendingAlarms();
 
@@ -32,10 +30,12 @@ public interface AlarmDAO extends CrudRepository<Alarm, Integer> {
     @Query
     List<Alarm> alarmExist(@Param("SERVERTIME") LocalDateTime serverTime, @Param("ALARMNAME") String alarmName);
 
-//TODO Test hibernate update and eplicite query update
     @Modifying
     @Query("update Alarm a set a.alarmDurationSeconds = :duration where a.id = :id")
-    void updatePhone(@Param(value = "id") int id, @Param(value = "duration") Long duration);
+    void updateAlarmDuration(@Param(value = "id") int id, @Param(value = "duration") Long duration);
 
+    @Modifying
+    @Query("update Alarm a set a.alarmStop = :endtime where a.id = :id")
+    void updateAlarmEndTime(@Param(value = "id") int id, @Param(value = "endtime") LocalDateTime endtime);
 
 }
