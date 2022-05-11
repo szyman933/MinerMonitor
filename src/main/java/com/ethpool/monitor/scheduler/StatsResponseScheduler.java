@@ -4,6 +4,7 @@ package com.ethpool.monitor.scheduler;
 import com.ethpool.monitor.client.EthPoolClient;
 import com.ethpool.monitor.domain.MinerStatsDTO;
 import com.ethpool.monitor.domain.StatsResponseDTO;
+import com.ethpool.monitor.service.AlarmService;
 import com.ethpool.monitor.service.DBService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,9 @@ public class StatsResponseScheduler {
 
     @Autowired
     DBService dbService;
+
+    @Autowired
+    AlarmService alarmService;
 
 
     @Scheduled(fixedDelayString = "${minermonitor.getpoolstats.interval}")
@@ -51,6 +55,7 @@ public class StatsResponseScheduler {
         } else {
             log.info("Fresh MinerStatsData, saving data");
             dbService.saveMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
+            alarmService.process(minerStatsDTO);
         }
 
     }

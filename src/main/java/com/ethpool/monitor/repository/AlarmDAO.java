@@ -26,7 +26,6 @@ public interface AlarmDAO extends CrudRepository<Alarm, Integer> {
     @Query
     List<Alarm> pendingAlarms();
 
-
     @Query
     List<Alarm> alarmExist(@Param("SERVERTIME") LocalDateTime serverTime, @Param("ALARMNAME") String alarmName);
 

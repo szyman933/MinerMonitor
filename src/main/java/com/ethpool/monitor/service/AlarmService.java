@@ -19,7 +19,6 @@ import java.util.List;
 import static com.ethpool.monitor.utilities.Converters.convertsLocalDateToLongMilis;
 
 
-
 @Service
 public class AlarmService {
 
@@ -46,12 +45,12 @@ public class AlarmService {
 
     boolean checkAlarm(MinerStatsData minerStatsData) {
 
-        return minerStatsData.getActiveWorkers() == 0 || minerStatsData.getCurrentHashrate() < hashRateThreshold;
+        return minerStatsData.getActiveWorkers() == 0 || minerStatsData.getCurrentHashrate() < hashRateThreshold || minerStatsData.getReportedHashrate() == 0L ;
     }
 
     int getAlarmReason(MinerStatsData minerStatsData) {
 
-        if (minerStatsData.getActiveWorkers() == 0) {
+        if (minerStatsData.getActiveWorkers() == 0 || minerStatsData.getReportedHashrate() == 0) {
             return WORKER_OFFLINE;
         } else if (minerStatsData.getCurrentHashrate() < hashRateThreshold) {
             return LOW_PERFORMANCE;
@@ -97,7 +96,7 @@ public class AlarmService {
     }
 
     List<Alarm> alarmExist(MinerStatsData minerStatsData, String name) {
-
+//TODO wyszukiwanie alarmu nie może bazować na serverTime bo on sie zmienia co 10 minut
         return dbService.alarmExist(minerStatsData.getServerTime(), name);
     }
 
@@ -106,7 +105,7 @@ public class AlarmService {
         return dbService.getPendingAlarms();
     }
 
-    void process(MinerStatsDTO minerStatsDTO) {
+    public void process(MinerStatsDTO minerStatsDTO) {
         log.debug("# Starting process data, looking for alarms ..");
         MinerStatsData minerStatsData = minerStatsDataMapper.mapToMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
 
@@ -120,11 +119,11 @@ public class AlarmService {
 
             Pair<Integer, String> alarmDetails = getAlarmNameAndLevel(reason);
 
-            log.info("Alarm details : level {} , name {}  ", alarmDetails.getFirst(), alarmDetails.getSecond());
+            log.info("Alarm details : level -> {} , name -> {}  ", alarmDetails.getFirst(), alarmDetails.getSecond());
 
             List<Alarm> existingAlarm = alarmExist(minerStatsData, alarmDetails.getSecond());
 
-            if (!existingAlarm.isEmpty()) {
+            if (existingAlarm.isEmpty()) {
 
                 log.info("Alarm doesn't exist in database, saving alarm !");
 
@@ -164,7 +163,10 @@ public class AlarmService {
 
             }
 
+        } else {
+            log.info("No alarms detected !");
         }
+
         log.debug("# Processing data finished ");
     }
 }
