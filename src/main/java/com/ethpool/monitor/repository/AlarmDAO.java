@@ -27,7 +27,7 @@ public interface AlarmDAO extends CrudRepository<Alarm, Integer> {
     List<Alarm> pendingAlarms();
 
     @Query
-    List<Alarm> alarmExist(@Param("SERVERTIME") LocalDateTime serverTime, @Param("ALARMNAME") String alarmName);
+    List<Alarm> alarmExist(@Param("ALARMNAME") String alarmName);
 
     @Modifying
     @Query("update Alarm a set a.alarmDurationSeconds = :duration where a.id = :id")

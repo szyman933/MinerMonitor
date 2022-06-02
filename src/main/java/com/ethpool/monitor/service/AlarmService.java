@@ -45,7 +45,7 @@ public class AlarmService {
 
     boolean checkAlarm(MinerStatsData minerStatsData) {
 
-        return minerStatsData.getActiveWorkers() == 0 || minerStatsData.getCurrentHashrate() < hashRateThreshold || minerStatsData.getReportedHashrate() == 0L ;
+        return minerStatsData.getActiveWorkers() == 0 || minerStatsData.getCurrentHashrate() < hashRateThreshold || minerStatsData.getReportedHashrate() == 0L;
     }
 
     int getAlarmReason(MinerStatsData minerStatsData) {
@@ -95,9 +95,9 @@ public class AlarmService {
         //TODO
     }
 
-    List<Alarm> alarmExist(MinerStatsData minerStatsData, String name) {
-//TODO wyszukiwanie alarmu nie może bazować na serverTime bo on sie zmienia co 10 minut
-        return dbService.alarmExist(minerStatsData.getServerTime(), name);
+    List<Alarm> alarmExist(String name) {
+
+        return dbService.alarmExist(name);
     }
 
     List<Alarm> getPendingAlarms() {
@@ -121,7 +121,7 @@ public class AlarmService {
 
             log.info("Alarm details : level -> {} , name -> {}  ", alarmDetails.getFirst(), alarmDetails.getSecond());
 
-            List<Alarm> existingAlarm = alarmExist(minerStatsData, alarmDetails.getSecond());
+            List<Alarm> existingAlarm = alarmExist(alarmDetails.getSecond());
 
             if (existingAlarm.isEmpty()) {
 

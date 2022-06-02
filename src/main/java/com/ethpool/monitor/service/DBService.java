@@ -72,8 +72,8 @@ public class DBService {
         return alarmDAO.pendingAlarms();
     }
 
-    public List<Alarm> alarmExist(LocalDateTime time, String name) {
-        return alarmDAO.alarmExist(time, name);
+    public List<Alarm> alarmExist(String name) {
+        return alarmDAO.alarmExist(name);
     }
 
     public void updateAlarmDuration(Alarm alarm) {

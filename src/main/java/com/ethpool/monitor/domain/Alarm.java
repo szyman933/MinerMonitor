@@ -11,7 +11,7 @@ import org.hibernate.annotations.NamedQuery;
 
 @NamedQuery(name = "Alarm.pendingAlarms", query = "FROM Alarm WHERE alarmStop is null")
 
-@NamedQuery(name = "Alarm.alarmExist", query = "FROM Alarm WHERE serverTime = :SERVERTIME and alarmName = :ALARMNAME and alarmStop is null")
+@NamedQuery(name = "Alarm.alarmExist", query = "FROM Alarm WHERE alarmName = :ALARMNAME and alarmStop is null")
 
 @Entity
 @Setter
