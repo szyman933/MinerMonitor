@@ -25,12 +25,24 @@ public class Converters {
     public static LocalDateTime convertsUnixTimestampToLocalDateTime(Long timestamp) {
 
 
-        return Instant.ofEpochMilli(timestamp*1000).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return Instant.ofEpochMilli(timestamp * 1000).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
     }
 
-    public static Long convertsLocalDateToLongMilis(LocalDateTime localDateTime) {
+    public static Long LocalDateTimeToMillis(LocalDateTime localDateTime) {
 
-        return  localDateTime.toInstant(ZoneOffset.of(ZoneId.systemDefault().getId())).toEpochMilli();
+
+        Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+
+        return instant.toEpochMilli();
     }
+
+    public static Long LocalDateTimeToSeconds(LocalDateTime localDateTime) {
+
+
+        Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+
+        return instant.toEpochMilli() / 1000;
+    }
+
 }

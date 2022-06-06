@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.ethpool.monitor.utilities.Converters.convertsLocalDateToLongMilis;
+import static com.ethpool.monitor.utilities.Converters.LocalDateTimeToSeconds;
 
 
 @Service
@@ -50,7 +50,7 @@ public class AlarmService {
 
     int getAlarmReason(MinerStatsData minerStatsData) {
 
-        if (minerStatsData.getActiveWorkers() == 0 || minerStatsData.getReportedHashrate() == 0) {
+        if (minerStatsData.getActiveWorkers() == 0 || minerStatsData.getReportedHashrate() == 0L) {
             return WORKER_OFFLINE;
         } else if (minerStatsData.getCurrentHashrate() < hashRateThreshold) {
             return LOW_PERFORMANCE;
@@ -91,8 +91,29 @@ public class AlarmService {
         return Pair.of(level, alarmName);
     }
 
-    void updateAlarm() {
-        //TODO
+    public void updateAllPendingAlarms() {
+
+        List<Alarm> pending = getPendingAlarms();
+
+        if (!pending.isEmpty()) {
+            log.info("Updating pending alarms duration time");
+
+            pending.stream().filter(a -> a.getAlarmRegistration() != null).forEach(a -> {
+
+                long difference = LocalDateTimeToSeconds(LocalDateTime.now()) - LocalDateTimeToSeconds(a.getAlarmRegistration());
+
+                a.setAlarmDurationSeconds(difference);
+
+                dbService.updateAlarmDuration(a);
+
+            });
+
+        } else {
+
+            log.info("No pending alarms to update");
+        }
+
+
     }
 
     List<Alarm> alarmExist(String name) {
@@ -107,6 +128,7 @@ public class AlarmService {
 
     public void process(MinerStatsDTO minerStatsDTO) {
         log.debug("# Starting process data, looking for alarms ..");
+
         MinerStatsData minerStatsData = minerStatsDataMapper.mapToMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
 
         boolean anyAlarm = checkAlarm(minerStatsData);
@@ -134,32 +156,8 @@ public class AlarmService {
                 dbService.saveAlarm(newAlarm);
 
             } else {
-                log.info("Alarm exist and is pending. Updating duration time ");
 
-                for (Alarm alarmToUpdate : existingAlarm
-                ) {
-                    log.debug("# Updating alarm : ID {}, NAME {}, REG_TIME{}", alarmToUpdate.getId(), alarmToUpdate.getAlarmName(), alarmToUpdate.getAlarmRegistration());
-
-                    Long alarmDuration;
-
-                    if (alarmToUpdate.getAlarmDurationSeconds() != null) {
-                        alarmDuration = alarmToUpdate.getAlarmDurationSeconds();
-                    } else {
-                        alarmDuration = 0L;
-                    }
-
-                    long difference = (convertsLocalDateToLongMilis(LocalDateTime.now()) - convertsLocalDateToLongMilis(alarmToUpdate.getAlarmRegistration())) * 1000;
-
-                    log.debug("# Calculated duration is : {} s", alarmDuration + difference);
-
-                    alarmToUpdate.setAlarmDurationSeconds(alarmDuration + difference);
-
-                    dbService.updateAlarmDuration(alarmToUpdate);
-
-                    log.debug("# Updated Alarm  : {} s", alarmToUpdate);
-
-                }
-
+                log.info("Alarm exist and is pending. {} ", existingAlarm);
 
             }
 
@@ -167,6 +165,9 @@ public class AlarmService {
             log.info("No alarms detected !");
         }
 
+        //   updateAllPendingAlarms();
+
         log.debug("# Processing data finished ");
     }
+
 }

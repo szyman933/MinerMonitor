@@ -52,7 +52,7 @@ class AlarmDAOTest {
 
         int id = alarm.getId();
 
-        List<Alarm> fetchedAlarm = alarmDAO.alarmExist(serverTime, "Testowy");
+        List<Alarm> fetchedAlarm = alarmDAO.alarmExist( "Testowy");
 
         assertEquals(1, fetchedAlarm.size());
 

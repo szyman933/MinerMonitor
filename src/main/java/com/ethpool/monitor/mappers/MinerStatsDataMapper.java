@@ -3,7 +3,7 @@ package com.ethpool.monitor.mappers;
 import com.ethpool.monitor.domain.MinerStatsData;
 import com.ethpool.monitor.domain.MinerStatsDataDTO;
 import org.springframework.stereotype.Component;
-import static com.ethpool.monitor.utilities.Converters.convertsLocalDateToLongMilis;
+import static com.ethpool.monitor.utilities.Converters.LocalDateTimeToMillis;
 import static com.ethpool.monitor.utilities.Converters.convertsUnixTimestampToLocalDateTime;
 
 
@@ -35,8 +35,8 @@ public class MinerStatsDataMapper {
 
 
         return new MinerStatsDataDTO(
-                convertsLocalDateToLongMilis(minerStatsData.getServerTime()),
-                convertsLocalDateToLongMilis(minerStatsData.getRigLastSeen()),
+                LocalDateTimeToMillis(minerStatsData.getServerTime()),
+                LocalDateTimeToMillis(minerStatsData.getRigLastSeen()),
                 minerStatsData.getReportedHashrate(),
                 minerStatsData.getCurrentHashrate(),
                 minerStatsData.getValidShares(),

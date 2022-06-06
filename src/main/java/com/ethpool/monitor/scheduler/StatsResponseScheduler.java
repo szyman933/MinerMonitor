@@ -51,13 +51,18 @@ public class StatsResponseScheduler {
         log.info("Status pobierania statystyk Minera : {} , aktywne koparki : {} , sredni hashrate : {}", minerStatsDTO.getStatus(), minerStatsDTO.getMinerStatsDataDTO().getActiveWorkers(), minerStatsDTO.getMinerStatsDataDTO().getAverageHashrate());
 
         if (dbService.existsMinerStatsDataByServerTime(minerStatsDTO.getMinerStatsDataDTO())) {
+
             log.warn("Duplicate MinerStatsData, skipping !");
+
         } else {
             log.info("Fresh MinerStatsData, saving data");
+
             dbService.saveMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
+
             alarmService.process(minerStatsDTO);
         }
 
+        alarmService.updateAllPendingAlarms();
     }
 
 
