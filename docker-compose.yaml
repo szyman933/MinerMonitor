@@ -1,6 +1,14 @@
-version: '2'
+version: '3'
 
 services:
+  db:
+    image: 'mysql:latest'
+    container_name: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=miner_monitor
+      - MYSQL_USER=mm_user_local
+      - MYSQL_PASSWORD=minermonitor2022
   app:
     image: 'szyman933/miner_mysql:latest'
     build:
@@ -13,13 +21,5 @@ services:
       - SPRING_DATASOURCE_USERNAME=mm_user_local
       - SPRING_DATASOURCE_PASSWORD=minermonitor2022
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - MINERADRESS=
+      - MINERADRESS=bca9200940bffae2eeb83cfe0d22e0d1dc6c823c
 
-  db:
-    image: 'mysql'
-    container_name: db
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=miner_monitor
-      - MYSQL_USER=mm_user_local
-      - MYSQL_PASSWORD=minermonitor2022
