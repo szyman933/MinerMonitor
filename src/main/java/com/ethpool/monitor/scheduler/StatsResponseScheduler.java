@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 
 @Component
@@ -30,7 +31,7 @@ public class StatsResponseScheduler {
 
 
     @Scheduled(fixedDelayString = "${minermonitor.getpoolstats.interval}")
-    void getStatsResponseAndSave() {
+    public void getStatsResponseAndSave() {
 
         StatsResponseDTO poolStats = ethPoolClient.getStatsResponse();
 
@@ -44,23 +45,34 @@ public class StatsResponseScheduler {
 
 
     @Scheduled(fixedDelayString = "${minermonitor.getminerstats.interval}")
-    void getMinerStatsAndSave() {
+    public void getMinerStatsAndSave() {
 
         MinerStatsDTO minerStatsDTO = ethPoolClient.getMinerStats();
 
-        log.info("Status pobierania statystyk Minera : {} , aktywne koparki : {} , sredni hashrate : {}", minerStatsDTO.getStatus(), minerStatsDTO.getMinerStatsDataDTO().getActiveWorkers(), minerStatsDTO.getMinerStatsDataDTO().getAverageHashrate());
 
-        if (dbService.existsMinerStatsDataByServerTime(minerStatsDTO.getMinerStatsDataDTO())) {
+        if(minerStatsDTO.getStatus() != null && minerStatsDTO.getMinerStatsDataDTO()!=null){
 
-            log.warn("Duplicate MinerStatsData, skipping !");
+            log.info("Status pobierania statystyk Minera : {} , aktywne koparki : {} , sredni hashrate : {}", minerStatsDTO.getStatus(), minerStatsDTO.getMinerStatsDataDTO().getActiveWorkers(), minerStatsDTO.getMinerStatsDataDTO().getAverageHashrate());
 
-        } else {
-            log.info("Fresh MinerStatsData, saving data");
 
-            dbService.saveMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
+            if (dbService.existsMinerStatsDataByServerTime(minerStatsDTO.getMinerStatsDataDTO())) {
 
-            alarmService.process(minerStatsDTO);
+                log.warn("Duplicate MinerStatsData, skipping !");
+
+            } else {
+                log.info("Fresh MinerStatsData, saving data");
+
+                dbService.saveMinerStatsData(minerStatsDTO.getMinerStatsDataDTO());
+
+                alarmService.process(minerStatsDTO);
+            }
+
+        }else {
+
+            log.warn("No data in miner stats !");
+
         }
+
 
         alarmService.updateAllPendingAlarms();
     }

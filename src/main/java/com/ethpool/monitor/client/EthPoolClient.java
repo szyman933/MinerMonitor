@@ -47,7 +47,7 @@ public class EthPoolClient {
 
         MinerStatsDTO receivedMinerStats = restTemplate.getForObject(url, MinerStatsDTO.class);
 
-        if (receivedMinerStats != null) {
+        if (receivedMinerStats != null && receivedMinerStats.getMinerStatsDataDTO().isHasData()) {
             return receivedMinerStats;
         }
         LOGGER.warn("MinerStatsDTO is null, creating empty minerStats");

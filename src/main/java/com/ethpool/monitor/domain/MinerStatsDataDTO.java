@@ -36,8 +36,14 @@ public class MinerStatsDataDTO {
     @JsonProperty("btcPerMin")
     private Double btcPerMin;
 
+    private boolean hasData;
+
 
     public MinerStatsDataDTO() {
+    }
+
+    public MinerStatsDataDTO(String value){
+        this.hasData=false;
     }
 
     public MinerStatsDataDTO(Long serverTime, Long rigLastSeen, Long reportedHashrate, Long currentHashrate, Integer validShares, Integer invalidShares, Integer staleShares, Integer activeWorkers, Double averageHashrate, Long unpaidBallance, Double coinsPerMin, Double usdPerMin, Double btcPerMin) {
@@ -54,6 +60,7 @@ public class MinerStatsDataDTO {
         this.coinsPerMin = coinsPerMin;
         this.usdPerMin = usdPerMin;
         this.btcPerMin = btcPerMin;
+        this.hasData=true;
     }
 
     public Long getServerTime() {
@@ -106,5 +113,9 @@ public class MinerStatsDataDTO {
 
     public Double getBtcPerMin() {
         return btcPerMin;
+    }
+
+    public boolean isHasData() {
+        return hasData;
     }
 }
